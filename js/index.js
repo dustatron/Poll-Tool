@@ -9,39 +9,51 @@ const View = function(controllers) {
   let readOutZero = document.getElementById('vote-0');
   let readOutOne = document.getElementById('vote-1');
   let readOutTwo = document.getElementById('vote-2');
-  let tallyButton = document.getElementById('tally')
+  let tallyButton = document.getElementById('tally');
+  let alerts = document.getElementById('alert');
 
   buttonZero.addEventListener("click", function() {
     controllers.addVote("apples");
     readOutZero.innerHTML = controllers.HasVote("apples");
+    outOfVotes(controllers.alertStatus());
   });
 
   buttonOne.addEventListener("click", function() {
     controllers.addVote("mangos");
     readOutOne.innerHTML = controllers.HasVote("mangos");
+    outOfVotes(controllers.alertStatus());
   });
 
   buttonTwo.addEventListener("click", function() {
     controllers.addVote("grapes");
     readOutTwo.innerHTML = controllers.HasVote("grapes");
+    outOfVotes(controllers.alertStatus());
   });
 
   tallyButton.addEventListener("click", function() {
     let readOut = controllers.sort();
     tallyVotes.innerHTML = "First Place is : " + readOut[0][0] + " <br /> Second Place is : " + readOut[1][0];
-
   });
+
+  let outOfVotes = function(value) {
+    console.log(value);
+    if(value){
+      alerts.className = "alert-on";
+    } else {
+    }
+  };
 };
 
-const Controller = function(votes) {
+const Controller = function(votes, views) {
   let VotesRemaining = 10;
+  let alertOn = false;
 
-  this.addVote = function(value) {
+  this.addVote = function(value, element) {
     if(VotesRemaining > 0){
     VotesRemaining = VotesRemaining -1;
     votes.apply(value);
   } else {
-    alert("You have used up all 10 votes");
+    alertOn = true;
   }
   };
 
@@ -64,6 +76,9 @@ const Controller = function(votes) {
     return sortedByVotes;
   };
 
+  this.alertStatus = function() {
+    return alertOn;
+  }
 
 };// END Controller
 
