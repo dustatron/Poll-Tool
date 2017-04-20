@@ -13,22 +13,23 @@ const View = function(controllers) {
 
   buttonZero.addEventListener("click", function() {
     controllers.addVote("apples");
+    readOutZero.innerHTML = controllers.HasVote("apples");
   });
 
   buttonOne.addEventListener("click", function() {
     controllers.addVote("mangos");
+    readOutOne.innerHTML = controllers.HasVote("mangos");
   });
 
   buttonTwo.addEventListener("click", function() {
     controllers.addVote("grapes");
+    readOutTwo.innerHTML = controllers.HasVote("grapes");
   });
 
   tallyButton.addEventListener("click", function() {
-    let readOut = controllers.tallyVotes();
-    tallyVotes.innerHTML = "";
-    for (var key in readOut){
-      tallyVotes.innerHTML += key+":"+readOut[key].vote+"<br/>";
-    }
+    let readOut = controllers.sort();
+    tallyVotes.innerHTML = "Winner is : " + readOut[0][0];
+
   });
 };
 
@@ -37,11 +38,27 @@ const Controller = function(votes) {
     votes.apply(value);
   };
 
-  this.tallyVotes = function() {
-    let tally = votes.ballot();
-    return tally;
+  this.HasVote = function(value) {
+    return votes.get(value);
+  }
+
+  this.sort = function() {
+    let ballotObj = votes.ballot();
+    let sortable = [];
+
+    for(var key in ballotObj) {
+      let vote = ballotObj[key].vote;
+       sortable.push([key, vote]);
+    };
+
+    let sortedByVotes = sortable.sort(function(a,b) {
+        return b[1]-a[1];
+      });
+    return sortedByVotes;
   };
-};
+
+
+};// END Controller
 
 const Vote = function() {
   let ballot ={
@@ -52,6 +69,10 @@ const Vote = function() {
 
   this.ballot = function(value) {
     return ballot;
+  }
+
+  this.get = function(value) {
+    return ballot[value].vote;
   }
 
   this.apply = function(value) {
