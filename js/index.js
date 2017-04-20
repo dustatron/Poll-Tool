@@ -28,14 +28,21 @@ const View = function(controllers) {
 
   tallyButton.addEventListener("click", function() {
     let readOut = controllers.sort();
-    tallyVotes.innerHTML = "Winner is : " + readOut[0][0];
+    tallyVotes.innerHTML = "First Place is : " + readOut[0][0] + " <br /> Second Place is : " + readOut[1][0];
 
   });
 };
 
 const Controller = function(votes) {
+  let VotesRemaining = 10;
+
   this.addVote = function(value) {
+    if(VotesRemaining > 0){
+    VotesRemaining = VotesRemaining -1;
     votes.apply(value);
+  } else {
+    alert("You have used up all 10 votes");
+  }
   };
 
   this.HasVote = function(value) {
