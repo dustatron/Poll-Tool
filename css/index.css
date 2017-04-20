@@ -1,0 +1,12 @@
+body{
+  padding-top: 70px;
+}
+
+ol{
+  list-style-type: none;
+}
+
+
+.poll-list{
+  font-weight: bold;
+}
