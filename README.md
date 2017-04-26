@@ -1,1 +1,1 @@
-Poll-tool
+Creating  a simple javascript polling site. 
