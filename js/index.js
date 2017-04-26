@@ -16,6 +16,7 @@ const View = function(controllers) {
   let voteSection = document.getElementById('vote-section');
   let addSection = document.getElementById('add-section');
   let otherSection = document.getElementById('other-section');
+  let listOut = document.getElementById('list-out');
 
 
   let allSections = [voteSection, addSection, tallySection, otherSection];
@@ -26,40 +27,21 @@ const View = function(controllers) {
   let addNav = document.getElementById('add-nav');
   let otherNav = document.getElementById('other-nav');
 
+
 ///// buttons
-  buttonZero.addEventListener("click", function() {
-    controllers.addVote(0);
-    readOutZero.innerHTML = controllers.HasVote(0);
-    outOfVotes(controllers.alertStatus());
-  });
-
-  buttonOne.addEventListener("click", function() {
-    controllers.addVote(1);
-    readOutOne.innerHTML = controllers.HasVote(1);
-    outOfVotes(controllers.alertStatus());
-  });
-
-  buttonTwo.addEventListener("click", function() {
-    controllers.addVote(2);
-    readOutTwo.innerHTML = controllers.HasVote(2);
-    outOfVotes(controllers.alertStatus());
-  });
 
   submitButton.addEventListener("click", function() {
     let addName = document.getElementById('addName').value;
     controllers.addToBallot(addName);
   })
 
-  // tallyButton.addEventListener("click", function() {
-  //   let readOut = controllers.sort();
-  //   tallyVotes.innerHTML = "First Place is : " + readOut[0][0] + " <br /> Second Place is : " + readOut[1][0];
-  // });
 
 
 ////// NAV SHOW HIDE ////
   homeNav.addEventListener("click" ,function() {
     hideAll();
     voteSection.className = "show";
+    print();
 
   })
 
@@ -84,24 +66,59 @@ const View = function(controllers) {
   })
 
 ///// Helper functions ////
+  let print = function() {
+    let listItems = controllers.ballotNow();
+    let counter = 0
+    listOut.innerHTML ="";
+
+    listItems.forEach(function(value) {
+      let button = 'button-'+counter+
+      counter ++;
+      listOut.innerHTML += '<li> <button id="'+counter+'" class="vote-button btn btn-danger" type="button" name="button">' + value.name + '</button> <span id="vote-'+counter+'">  :Vote Count</span> '+ value.vote + "</li>";
+    }); //END forEach
+
+    voteButtons();
+
+};
+
+  let voteButtons = function() {
+    elementList = document.querySelectorAll('.vote-button');
+    elementList.forEach(function(key) {
+      console.log(key);
+      let keyId = key.id -1;
+      console.log(keyId);
+      key.addEventListener("click", function() {
+        controllers.addVote(keyId);
+        outOfVotes();
+        print();
+      });
+    });
+
+  };
+
   let hideAll = function() {
     allSections.forEach(function(callback){
       callback.className = "hide";
     });
   };
 
-  let outOfVotes = function(value) {
-
-    if(value){
+  let outOfVotes = function() {
+    if(controllers.alertStatus()){
       alerts.className = "alert-on";
     } else {
     }
   };
-};
+
+  print();
+}; /// END OF VIEW
 
 const Controller = function(votes, views) {
   let VotesRemaining = 10;
   let alertOn = false;
+
+  this.ballotNow = function() {
+    return votes.ballot();
+  };
 
   this.addVote = function(value, element) {
     if(VotesRemaining > 0){
